@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Propuesta SPA · HUB Público de Datos Territoriales (Nariño 2026–2035)</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#0b1220;
+      --text:#e9eefc;
+      --muted:#b9c3de;
+      --muted2:#95a3c7;
+      --border:rgba(255,255,255,.10);
+      --shadow:0 18px 40px rgba(0,0,0,.35);
+      --primary:#6ea8ff;
+      --primary2:#3fd1a4;
+      --warning:#ffcc66;
+      --danger:#ff6b6b;
+      --chip:#15284b;
+      --chipText:#cfe0ff;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      --serif: "Source Serif 4", Georgia, serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior:smooth; }
+    body{
+      margin:0;
+      background: radial-gradient(1200px 600px at 20% 5%, rgba(110,168,255,.22), transparent 60%),
+                  radial-gradient(900px 500px at 85% 15%, rgba(63,209,164,.18), transparent 55%),
+                  radial-gradient(900px 500px at 65% 95%, rgba(255,204,102,.10), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      font-family:var(--sans);
+      line-height:1.55;
+    }
+
+    a{ color:var(--primary); text-decoration:none; }
+    a:hover{ text-decoration:underline; }
+
+    .container{ max-width:1100px; margin:0 auto; padding:0 20px; }
+
+    .topbar{
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(10px);
+      background: rgba(11,18,32,.65);
+      border-bottom: 1px solid var(--border);
+    }
+    .topbar-inner{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:16px;
+      padding:12px 0;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      font-weight:700;
+      letter-spacing:.2px;
+    }
+    .brand .dot{
+      width:12px; height:12px; border-radius:50%;
+      background: linear-gradient(135deg, var(--primary), var(--primary2));
+      box-shadow:0 0 0 4px rgba(110,168,255,.15);
+    }
+    .nav{
+      display:flex; flex-wrap:wrap; gap:10px;
+      justify-content:flex-end;
+    }
+    .nav a{
+      font-size:.88rem;
+      color:var(--muted);
+      padding:7px 10px;
+      border-radius:999px;
+      border: 1px solid transparent;
+    }
+    .nav a:hover{
+      color:var(--text);
+      background: rgba(255,255,255,.04);
+      border-color: var(--border);
+      text-decoration:none;
+    }
+
+    header{ padding:38px 0 26px; }
+    .hero{
+      display:grid;
+      grid-template-columns: 1.35fr .9fr;
+      gap:22px;
+      align-items:stretch;
+    }
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:7px 12px;
+      border-radius:999px;
+      background: rgba(255,255,255,.05);
+      border:1px solid var(--border);
+      color: var(--chipText);
+      font-size:.82rem;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      width:fit-content;
+    }
+    h1{
+      margin:14px 0 10px;
+      font-size:2.2rem;
+      line-height:1.15;
+    }
+    .subtitle{
+      color: var(--muted);
+      font-size:1.02rem;
+      max-width:62ch;
+    }
+    .hero-actions{
+      display:flex; flex-wrap:wrap; gap:10px;
+      margin-top:18px;
+    }
+    .btn{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:11px 14px;
+      border-radius:12px;
+      font-weight:650;
+      border:1px solid var(--border);
+      box-shadow: 0 10px 30px rgba(0,0,0,.18);
+      cursor:pointer;
+      transition: transform .08s ease;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btn-primary{
+      background: linear-gradient(135deg, rgba(110,168,255,.22), rgba(63,209,164,.16));
+      color: var(--text);
+    }
+    .btn-ghost{
+      background: rgba(255,255,255,.03);
+      color: var(--muted);
+    }
+
+    .hero-card{
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
+      border:1px solid var(--border);
+      border-radius:18px;
+      box-shadow: var(--shadow);
+      padding:16px 16px 14px;
+    }
+    .hero-card h3{ margin:2px 0 10px; font-size:1rem; }
+    .hero-card ul{
+      margin:0; padding-left:18px;
+      color: var(--muted);
+      font-size:.95rem;
+    }
+
+    main{ padding: 10px 0 46px; }
+    section{ margin-top:26px; }
+    .section-head{
+      display:flex; align-items:baseline; justify-content:space-between; gap:16px;
+      margin-bottom:10px;
+    }
+    h2{ margin:0; font-size:1.35rem; color: var(--primary); }
+    .kicker{ color: var(--muted2); font-size:.9rem; }
+    .grid2{ display:grid; grid-template-columns: 1fr 1fr; gap:14px; }
+    .grid3{ display:grid; grid-template-columns: repeat(3, 1fr); gap:14px; }
+
+    .card{
+      background: rgba(255,255,255,.03);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:14px 14px 12px;
+    }
+    .card h3{ margin:2px 0 8px; font-size:1.02rem; }
+    .card p{ margin:0; color: var(--muted); font-size:.95rem; }
+    .list{ margin:8px 0 0; padding-left:18px; color: var(--muted); font-size:.95rem; }
+
+    .chips{ display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+    .chip{
+      font-size:.78rem;
+      padding:6px 9px;
+      border-radius:999px;
+      background: var(--chip);
+      color: var(--chipText);
+      border:1px solid rgba(110,168,255,.18);
+    }
+
+    .quote{
+      border-left: 4px solid rgba(110,168,255,.65);
+      padding: 10px 12px;
+      background: rgba(110,168,255,.08);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: var(--serif);
+      font-size:1.02rem;
+    }
+    .quote code{
+      font-family:var(--mono);
+      font-size:.9rem;
+      background: rgba(0,0,0,.25);
+      padding:2px 6px;
+      border-radius:8px;
+    }
+
+    .table-wrap{
+      overflow:auto;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.02);
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:780px;
+      font-size:.92rem;
+    }
+    th, td{
+      padding:10px 10px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      text-align:left;
+      vertical-align:top;
+      color: var(--muted);
+    }
+    th{
+      color: var(--text);
+      font-size:.82rem;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      background: rgba(255,255,255,.03);
+    }
+    tr:last-child td{ border-bottom:none; }
+
+    .tag{
+      display:inline-flex;
+      padding:3px 8px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      font-size:.78rem;
+      color: var(--text);
+      background: rgba(255,255,255,.03);
+      white-space:nowrap;
+    }
+    .tag.ok{ border-color: rgba(67,209,122,.35); background: rgba(67,209,122,.10); }
+    .tag.warn{ border-color: rgba(255,204,102,.38); background: rgba(255,204,102,.10); }
+    .tag.danger{ border-color: rgba(255,107,107,.38); background: rgba(255,107,107,.10); }
+
+    .footnote{ font-size:.85rem; color: var(--muted2); margin-top:10px; }
+
+    .cta{
+      margin-top:26px;
+      background: linear-gradient(135deg, rgba(110,168,255,.18), rgba(63,209,164,.12));
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+      display:grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap:14px;
+      align-items:start;
+    }
+    .cta h3{ margin:0 0 6px; }
+    .cta p{ margin:0; color: var(--muted); }
+    .form{
+      background: rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:16px;
+      padding:12px;
+    }
+    label{ display:block; font-size:.8rem; color: var(--muted2); margin:0 0 6px; }
+    select, textarea{
+      width:100%;
+      padding:10px 10px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(15,26,48,.65);
+      color: var(--text);
+      font-family: var(--sans);
+      margin-bottom:10px;
+      outline:none;
+    }
+    textarea{ min-height:74px; resize:vertical; }
+
+    footer{
+      border-top:1px solid var(--border);
+      padding:18px 0 22px;
+      color: var(--muted2);
+      font-size:.85rem;
+    }
+
+    @media (max-width: 960px){
+      .hero{ grid-template-columns: 1fr; }
+      .grid2{ grid-template-columns: 1fr; }
+      .grid3{ grid-template-columns: 1fr; }
+      .cta{ grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand">
+        <span class="dot"></span>
+        <span>SPA · HUB Público de Datos (Nariño)</span>
+      </div>
+      <nav class="nav" aria-label="Navegación">
+        <a href="#resumen">Resumen</a>
+        <a href="#spa">SPA</a>
+        <a href="#pestel">PESTEL</a>
+        <a href="#riesgos">CR2 · Riesgos</a>
+        <a href="#agile">Agile</a>
+        <a href="#comparativo">Comparativo</a>
+        <a href="#bibliografia">APA</a>
+      </nav>
+    </div>
+  </div>
+
+  <header class="container" id="resumen">
+    <div class="hero">
+      <div>
+        <div class="badge">Prospectiva · PESTEL · Escenarios · Agile Mindset</div>
+        <h1>Propuesta de Situación Particular de Análisis (SPA):<br/>HUB Público de Datos Territoriales para Nariño (2026–2035)</h1>
+        <p class="subtitle">
+          Documento de trabajo para presentar al equipo (4 integrantes): una SPA con potencial de <strong>alto valor académico</strong>,
+          reutilizable para <strong>Seminario de Trabajo de Grado</strong> e integrable con <strong>Agile Mindset</strong>.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#spa">Ver definición SPA</a>
+          <a class="btn btn-ghost" href="#comparativo">Comparar con otras ideas</a>
+        </div>
+        <div class="chips" style="margin-top:14px;">
+          <span class="chip">Horizonte: 2026–2035</span>
+          <span class="chip">Enfoque: Brechas y Tendencias</span>
+          <span class="chip">Criterio: CR2 (supervivencia)</span>
+          <span class="chip">Producto: Informe APA</span>
+        </div>
+      </div>
+
+      <aside class="hero-card" aria-label="Objetivo general">
+        <h3>¿Qué buscamos lograr?</h3>
+        <ul>
+          <li>Diseñar prospectivamente un HUB de datos territoriales para apoyar decisiones públicas y privadas.</li>
+          <li>Analizar el entorno macro (PESTEL) con enfoque de tendencias, brechas y escenarios 2035.</li>
+          <li>Identificar riesgos y amenazas futuras (CR2) y proponer líneas de mitigación/aprovechamiento.</li>
+          <li>Plantear una ruta de implementación incremental (Agile) mediante MVPs.</li>
+        </ul>
+      </aside>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="spa">
+      <div class="section-head">
+        <h2>1) Definición formal de la SPA</h2>
+        <div class="kicker">Delimitación · Territorio · Horizonte · Propósito</div>
+      </div>
+
+      <div class="quote">
+        <strong>SPA propuesta:</strong> Diseño prospectivo para la creación de un HUB público de datos territoriales en el
+        departamento de Nariño, con horizonte <code>2026–2035</code>, orientado a fortalecer la toma de decisiones públicas y privadas
+        bajo un modelo de gobernanza <strong>sostenible</strong> y <strong>adaptable</strong> a entornos inciertos.
+      </div>
+
+      <div class="grid2" style="margin-top:14px;">
+        <div class="card">
+          <h3>Problema (situación actual)</h3>
+          <ul class="list">
+            <li>Datos dispersos, fragmentados y con baja interoperabilidad entre niveles (nacional, departamental, municipal).</li>
+            <li>Baja reutilización de datos para decisiones de inversión, gestión pública, salud, educación, agro y productividad.</li>
+            <li>Brechas en cultura de datos y alfabetización digital en actores públicos, privados y comunitarios.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Oportunidad (futuro deseable)</h3>
+          <ul class="list">
+            <li>Articular un ecosistema territorial de datos (abiertos + sectoriales) con gobernanza y sostenibilidad.</li>
+            <li>Mejorar la planeación basada en evidencia, transparencia y coordinación interinstitucional.</li>
+            <li>Crear capacidades para proyectos de BI/Analítica territorial con impacto público y privado.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="pestel">
+      <div class="section-head">
+        <h2>2) PESTEL Prospectivo (estructura de análisis)</h2>
+        <div class="kicker">Tendencias · Brechas · Impacto en la SPA</div>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <h3>Formato por factor (cómo lo construiremos)</h3>
+          <ul class="list">
+            <li><strong>Tendencias</strong> (qué viene ocurriendo y señales relevantes)</li>
+            <li><strong>Brechas</strong> (qué falta para el futuro deseable)</li>
+            <li><strong>Implicación</strong> (cómo afecta al HUB)</li>
+            <li><strong>Riesgos y oportunidades</strong> (enfoque CR2)</li>
+            <li><strong>Indicadores a monitorear</strong> (alertas tempranas)</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Variables típicas por factor</h3>
+          <ul class="list">
+            <li><strong>Político:</strong> continuidad, articulación, gobernanza multi-actor</li>
+            <li><strong>Económico:</strong> presupuesto, sostenibilidad, shocks macro</li>
+            <li><strong>Social:</strong> adopción, confianza, alfabetización digital</li>
+            <li><strong>Tecnológico:</strong> interoperabilidad, IA, infraestructura, seguridad</li>
+            <li><strong>Ecológico:</strong> uso del dato para gestión ambiental y riesgos climáticos</li>
+            <li><strong>Legal:</strong> protección de datos, contratación pública, transparencia</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="riesgos">
+      <div class="section-head">
+        <h2>3) CR2 · Matriz preliminar de riesgos y amenazas futuras</h2>
+        <div class="kicker">Probabilidad · Impacto · Señales de alerta</div>
+      </div>
+
+      <div class="table-wrap" role="region" aria-label="Tabla de riesgos CR2">
+        <table>
+          <thead>
+            <tr>
+              <th>Factor</th>
+              <th>Amenaza futura (2035)</th>
+              <th>Prob.</th>
+              <th>Impacto</th>
+              <th>Señales de alerta</th>
+              <th>Mitigación / Aprovechamiento (línea inicial)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="tag">Político</span></td>
+              <td>Discontinuidad por cambio de gobierno / prioridades (ciclos electorales).</td>
+              <td><span class="tag warn">Media–Alta</span></td>
+              <td><span class="tag danger">Alta</span></td>
+              <td>Recortes, cambios de equipo, baja articulación interinstitucional.</td>
+              <td>Gobernanza multi-actor + acuerdos interinstitucionales + hoja de ruta pública.</td>
+            </tr>
+            <tr>
+              <td><span class="tag">Económico</span></td>
+              <td>Desfinanciación o inviabilidad del modelo (costos de operación y talento).</td>
+              <td><span class="tag warn">Media</span></td>
+              <td><span class="tag danger">Alta</span></td>
+              <td>Congelamiento presupuestal, alta rotación, dependencia de un solo financiador.</td>
+              <td>Modelo híbrido: fondos públicos + cooperación + servicios analíticos no sensibles.</td>
+            </tr>
+            <tr>
+              <td><span class="tag">Social</span></td>
+              <td>Baja adopción por falta de cultura de datos y desconfianza.</td>
+              <td><span class="tag warn">Media</span></td>
+              <td><span class="tag warn">Media–Alta</span></td>
+              <td>Baja participación, resistencia interna, bajo uso de tableros.</td>
+              <td>Alfabetización + casos de valor rápido + co-diseño con usuarios.</td>
+            </tr>
+            <tr>
+              <td><span class="tag">Tecnológico</span></td>
+              <td>Ciberincidentes y pérdida de confianza; dependencia tecnológica (vendor lock‑in).</td>
+              <td><span class="tag warn">Media</span></td>
+              <td><span class="tag danger">Alta</span></td>
+              <td>Incidentes, auditorías negativas, sistemas cerrados sin portabilidad.</td>
+              <td>Arquitectura abierta + estándares + seguridad por diseño + continuidad.</td>
+            </tr>
+            <tr>
+              <td><span class="tag">Legal</span></td>
+              <td>Restricciones por protección de datos y contratación; incumplimientos.</td>
+              <td><span class="tag warn">Media</span></td>
+              <td><span class="tag warn">Media–Alta</span></td>
+              <td>Hallazgos de control, quejas, cambios normativos, falta de documentación.</td>
+              <td>Roles y políticas + privacidad por diseño + evidencias de cumplimiento.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="footnote">Matriz preliminar para discusión y ajuste por equipo.</p>
+    </section>
+
+    <section id="agile">
+      <div class="section-head">
+        <h2>4) Integración con Agile Mindset (MVP + Backlog)</h2>
+        <div class="kicker">Iteración · Validación · Entrega incremental</div>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <h3>Ruta por MVP (propuesta)</h3>
+          <ul class="list">
+            <li><strong>MVP 1:</strong> Diagnóstico territorial + mapa de actores + catálogo de datasets.</li>
+            <li><strong>MVP 2:</strong> Arquitectura mínima (ingesta + diccionario + repositorio + estándares).</li>
+            <li><strong>MVP 3:</strong> Dashboard piloto sectorial + medición de adopción.</li>
+            <li><strong>MVP 4:</strong> Gobernanza y sostenibilidad (roles, políticas, financiación, operación).</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Historias de usuario (ejemplos)</h3>
+          <ul class="list">
+            <li><em>Como</em> analista territorial, <em>quiero</em> un catálogo confiable, <em>para</em> reducir duplicidad.</li>
+            <li><em>Como</em> funcionario municipal, <em>quiero</em> indicadores en un tablero, <em>para</em> priorizar con evidencia.</li>
+            <li><em>Como</em> ciudadano, <em>quiero</em> visualizaciones, <em>para</em> transparencia y participación.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="comparativo">
+      <div class="section-head">
+        <h2>5) Comparativo objetivo de SPA (para decidir en equipo)</h2>
+        <div class="kicker">Profundidad · CR2 · acceso a info · reutilización</div>
+      </div>
+
+      <div class="table-wrap" role="region" aria-label="Tabla comparativa de SPA">
+        <table>
+          <thead>
+            <tr>
+              <th>Opción SPA</th>
+              <th>Definición breve</th>
+              <th>Acceso a info</th>
+              <th>PESTEL</th>
+              <th>CR2</th>
+              <th>Reutilización</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>HUB Público de Datos</strong></td>
+              <td>Gobernanza + interoperabilidad + decisiones basadas en evidencia.</td>
+              <td><span class="tag ok">Alta</span></td>
+              <td><span class="tag ok">Alta</span></td>
+              <td><span class="tag ok">Alta</span></td>
+              <td><span class="tag ok">Alta</span></td>
+            </tr>
+            <tr>
+              <td><strong>PQRS (Compensar)</strong></td>
+              <td>Optimización de PQRS y experiencia del usuario.</td>
+              <td><span class="tag warn">Media</span></td>
+              <td><span class="tag warn">Media</span></td>
+              <td><span class="tag warn">Media</span></td>
+              <td><span class="tag warn">Media</span></td>
+            </tr>
+            <tr>
+              <td><strong>Compras (Autopartes)</strong></td>
+              <td>Resiliencia de abastecimiento ante choques globales.</td>
+              <td><span class="tag ok">Media–Alta</span></td>
+              <td><span class="tag ok">Media–Alta</span></td>
+              <td><span class="tag ok">Alta</span></td>
+              <td><span class="tag warn">Media</span></td>
+            </tr>
+            <tr>
+              <td><strong>Robot “Wall‑E”</strong></td>
+              <td>Asistente robótico (requiere sector/uso para aterrizar).</td>
+              <td><span class="tag warn">Baja–Media</span></td>
+              <td><span class="tag warn">Variable</span></td>
+              <td><span class="tag warn">Variable</span></td>
+              <td><span class="tag warn">Media</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="bibliografia">
+      <div class="section-head">
+        <h2>6) Bibliografía (APA · base)</h2>
+        <div class="kicker">Obligatoria + complementaria</div>
+      </div>
+
+      <div class="card">
+        <h3>Recursos obligatorios</h3>
+        <ul class="list">
+          <li>Aristizábal, E. E. A. (2020). <em>Diseño de un sistema de gestión para la formulación y ejecución de la estrategia del centro de productividad y desarrollo empresarial</em>. https://doi.org/10.57998/bdigital.handle.001.5204</li>
+          <li>Camacaro Pérez, M. V. (2015). Las personas, la principal fuente de energía de las organizaciones. <em>Sapienza Organizacional</em>, 2(3), 3–6.</li>
+        </ul>
+
+        <h3 style="margin-top:14px;">Recursos complementarios</h3>
+        <ul class="list">
+          <li>Carmona Reyes, D., Salazar Flórez, Y., Rodríguez Omen, V., &amp; Santacruz Salas, D. (2020). <em>Análisis para la viabilidad del mercado para la creación de una empresa de confecciones de ropa para mujeres talla grande en la ciudad de Cali</em>. Fundación Universitaria Panamericana.</li>
+          <li>Olaya Casalinas, M., Barbosa Ortiz, J., &amp; Sánchez Ruiz, P. (2023). <em>Análisis de los factores macroeconómicos que impacten al posicionamiento de la marca desde el target para la formulación de estrategias de comunicación digital. Caso de estudio Frisby S.A.</em> Fundación Universitaria Compensar.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="cta" id="sumate">
+      <div>
+        <h3>Próximo paso: migrar a Notion (tablero operativo)</h3>
+        <p>
+          Si el equipo aprueba la SPA, esta estructura se convierte en una página de Notion con:
+          backlog, responsables, fuentes, evidencias, versión del informe y cronograma por sprints.
+        </p>
+      </div>
+
+      <div class="form">
+        <label>¿Cuál opción SPA prefieres?</label>
+        <select>
+          <option>HUB Público de Datos (Nariño)</option>
+          <option>PQRS (Compensar)</option>
+          <option>Compras (Autopartes)</option>
+          <option>Robot “Wall‑E”</option>
+          <option>Otra (definir)</option>
+        </select>
+
+        <label>Comentarios (opcional)</label>
+        <textarea placeholder="¿Qué te gusta? ¿Qué te preocupa? ¿Qué ajustarías?"></textarea>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div><strong>Nota:</strong> Página de socialización para el equipo. Uso académico.</div>
+      <div style="margin-top:6px;">Última actualización: <span id="date"></span></div>
+    </div>
+  </footer>
+
+  <script>
+    const d = new Date();
+    const opts = { year:'numeric', month:'long', day:'numeric' };
+    document.getElementById('date').textContent = d.toLocaleDateString('es-CO', opts);
+  </script>
+
+</body>
+</html>
